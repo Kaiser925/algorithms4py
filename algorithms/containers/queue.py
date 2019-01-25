@@ -9,9 +9,14 @@ class Queue(object):
         self._last = None
         self._len = 0
 
-    def enqueue(self, item: Optional) -> None:
+    def clear(self) -> None:
+        self._first = None
+        self._last = None
+        self._len = 0
+
+    def enqueue(self, val: Optional) -> None:
         old_last = self._last
-        self._last = SingleNode(item, None)
+        self._last = SingleNode(val, None)
         if self.empty():
             self._first = self._last
         else:

@@ -8,10 +8,14 @@ class Stack(object):
         self._first = None
         self._size = 0
 
-    def push(self, item: Optional) -> None:
+    def clear(self) -> None:
+        self._first = None
+        self._size = 0
+
+    def push(self, val: Optional) -> None:
         """push the element to stack.
         """
-        node = SingleNode(item, self._first)
+        node = SingleNode(val, self._first)
         self._first = node
         self._size += 1
 
@@ -51,6 +55,6 @@ class Stack(object):
     def __next__(self) -> Optional:
         if self._cur is None:
             raise StopIteration
-        item = self._cur.value
+        val = self._cur.value
         self._cur = self._cur.next
-        return item
+        return val
