@@ -1,5 +1,7 @@
-from typing import Optional, Iterable
+from typing import TypeVar, Iterable, Union
 from linkedlist import SingleNode
+
+T = TypeVar("T")
 
 
 class Queue(object):
@@ -14,7 +16,7 @@ class Queue(object):
         self._last = None
         self._len = 0
 
-    def enqueue(self, val: Optional) -> None:
+    def enqueue(self, val: T) -> None:
         old_last = self._last
         self._last = SingleNode(val, None)
         if self.empty():
@@ -23,13 +25,13 @@ class Queue(object):
             old_last.next = self._last
         self._len += 1
 
-    def peek(self):
+    def peek(self) -> Union[T, None]:
         if self._first is None:
             return None
         else:
             return self._first.value
 
-    def dequeue(self) -> Optional:
+    def dequeue(self) -> Union[T, None]:
         if self.empty():
             self._last = None
             return None
@@ -41,14 +43,14 @@ class Queue(object):
     def empty(self) -> bool:
         return self._len == 0
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._len
 
-    def __iter__(self) -> Iterable:
+    def __iter__(self):
         self._cur = self._first
         return self
 
-    def __next__(self) -> Optional:
+    def __next__(self) -> T:
         if self._cur is None:
             raise StopIteration
         val = self._cur.value
