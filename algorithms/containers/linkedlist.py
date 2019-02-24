@@ -1,28 +1,31 @@
-from typing import Optional
+from __future__ import annotations
+from typing import TypeVar, Optional
+
+T = TypeVar("T")
 
 
 class SingleNode(object):
-    def __init__(self, value: Optional, next_node: Optional) -> None:
+    def __init__(self, value: T, next_node: Optional[SingleNode]) -> None:
         self.value = value
         self.next = next_node
 
 
-class DoubleNode(object):
-    def __init__(self, value: Optional, prev_node: Optional,
-                 next_node: Optional) -> None:
+class DoublyNode(object):
+    def __init__(self, value: T) -> None:
         self.value = value
-        self.prev = prev_node
-        self.next = next_node
+        self.prev = None # type: Optional[DoublyNode]
+        self.next = None # type: Optional[DoublyNode]
 
 
 class DoublyLinkedList(object):
     def __init__(self):
-        self._first: DoubleNode = None
-        self._last: DoubleNode = None
+        self._first = None # type: Optional[DoublyNode]
+        self._last = None # type: Optional[DoublyNode]
         self._len: int = 0
 
-    def add(self, value: Optional) -> None:
-        node = DoubleNode(value, self._last, None)
+    def add(self, value: T) -> None:
+        node = DoublyNode(value)
+        node.prev = self._last
         if self._len == 0:
             self._first = node
             self._last = node
@@ -31,15 +34,20 @@ class DoublyLinkedList(object):
             self._last = node
         self._len += 1
 
-    def get(self, index: int) -> Optional:
+    def get(self, index: int) -> T:
         if index >= self._len or index < 0:
             raise IndexError("DoublyLinkedList index out of range")
 
-        elem = self._first
+        elem = self._first  # type: Optional[DoublyNode]
+
         for i in range(self._len):
+            if elem is None:
+                raise ValueError("Has none node in list.")
             if i == index:
-                return elem.value
+                value = elem.value
+                break
             elem = elem.next
+        return value
 
     def remove(self, index: int) -> None:
         if index >= self._len or index < 0:
@@ -49,8 +57,10 @@ class DoublyLinkedList(object):
             self.clear()
             return
 
-        elem = self._first
+        elem = self._first  # type: Optional[DoublyNode]
         for i in range(self._len):
+            if elem is None:
+                raise ValueError("Has none node in list.")
             if i == index:
                 break
             elem = elem.next
@@ -69,20 +79,20 @@ class DoublyLinkedList(object):
         elem = None
         self._len -= 1
 
-    def indexOf(self, value: Optional) -> int:
+    def indexOf(self, value: T) -> int:
         if self._len == 0:
             return -1
-        cur = self._first
+        cur = self._first  # type: Optional[DoublyNode]
         for i in range(self._len):
             if cur.value == value:
                 return i
             cur = cur.next
         return -1
 
-    def insert(self, index: int, value: Optional) -> None:
+    def insert(self, index: int, value: T) -> None:
         if index >= self._len or index < 0:
             raise IndexError("DoublyLinkedList index out of range")
-        cur = self._first
+        cur = self._first # type: Optional[DoublyNode]
 
         for i in range(self._len):
             if i == index:
@@ -91,12 +101,16 @@ class DoublyLinkedList(object):
 
         if cur == self._first:
             old = self._first
-            new = DoubleNode(value, None, old)
+            new = DoublyNode(value)
+            new.prev = None
+            new.next = old
             old.prev = new
             self._first = new
         else:
             old = cur
-            new = DoubleNode(value, old.prev, old)
+            new = DoublyNode(value)
+            new.prev = old.prev
+            new.next = old
             old.prev.next = new
             old.prev = new
 
