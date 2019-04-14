@@ -43,6 +43,8 @@ class DoublyLinkedList(ContainerIterMixin):
             self._first = node
             self._last = node
         else:
+            if self._last is None:
+                raise ValueError("_last is none.")
             self._last.next = node
             self._last = node
         self._len += 1
@@ -79,14 +81,14 @@ class DoublyLinkedList(ContainerIterMixin):
             elem = elem.next
 
         if elem == self._first:
-            self._first = elem.next
+            self._first =  elem.next if elem else None
         if elem == self._last:
-            self._last = elem.prev
+            self._last = elem.prev if elem else None
 
-        if elem.prev is not None:
+        if elem and elem.prev:
             elem.prev.next = elem.next
 
-        if elem.next is not None:
+        if elem and elem.next:
             elem.next.prev = elem.prev
 
         elem = None
@@ -97,9 +99,9 @@ class DoublyLinkedList(ContainerIterMixin):
             return -1
         cur = self._first  # type: Optional[DoublyNode]
         for i in range(self._len):
-            if cur.value == value:
+            if cur and cur.value == value:
                 return i
-            cur = cur.next
+            cur = cur.next if cur else None
         return -1
 
     def insert(self, index: int, value: T) -> None:
@@ -110,23 +112,25 @@ class DoublyLinkedList(ContainerIterMixin):
         for i in range(self._len):
             if i == index:
                 break
-            cur = cur.next
+            cur = cur.next if cur else None
 
         if cur == self._first:
             old = self._first
             new = DoublyNode(value)
             new.prev = None
             new.next = old
+            if old is None:
+                raise ValueError("_first is None.")
             old.prev = new
             self._first = new
         else:
             old = cur
             new = DoublyNode(value)
-            new.prev = old.prev
+            new.prev = old.prev if old else None
             new.next = old
-            old.prev.next = new
-            old.prev = new
-
+            if old and old.prev:
+                old.prev.next = new
+                old.prev = new
         llist._len += 1
 
     def clear(self):
