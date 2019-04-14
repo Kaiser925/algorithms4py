@@ -3,6 +3,19 @@ from typing import TypeVar, Optional
 
 T = TypeVar("T")
 
+class ContainerIterMixin(object):
+    def __iter__(self):
+        self._cur = self._first
+        return self
+
+    def __next__(self):
+        if self._cur is None:
+            raise StopIteration
+        else:
+            elem = self._cur
+            self._cur = self._cur.next
+            return elem.value
+
 
 class SingleNode(object):
     def __init__(self, value: T, next_node: Optional[SingleNode]) -> None:
@@ -17,7 +30,7 @@ class DoublyNode(object):
         self.next = None # type: Optional[DoublyNode]
 
 
-class DoublyLinkedList(object):
+class DoublyLinkedList(ContainerIterMixin):
     def __init__(self):
         self._first = None # type: Optional[DoublyNode]
         self._last = None # type: Optional[DoublyNode]
@@ -124,17 +137,17 @@ class DoublyLinkedList(object):
     def __len__(self):
         return self._len
 
-    def __iter__(self):
-        self._cur = self._first
-        return self
+    # def __iter__(self):
+    #     self._cur = self._first
+    #     return self
 
-    def __next__(self):
-        if self._cur is None:
-            raise StopIteration
-        else:
-            elem = self._cur
-            self._cur = self._cur.next
-            return elem.value
+    # def __next__(self):
+    #     if self._cur is None:
+    #         raise StopIteration
+    #     else:
+    #         elem = self._cur
+    #         self._cur = self._cur.next
+    #         return elem.value
 
 
 if __name__ == '__main__':

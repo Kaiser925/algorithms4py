@@ -1,12 +1,11 @@
 from typing import Optional, Iterable, TypeVar
-from linkedlist import SingleNode
+from linkedlist import SingleNode, ContainerIterMixin
 
 T = TypeVar("T")
 
 
-class Stack(object):
+class Stack(ContainerIterMixin):
     def __init__(self):
-        super(Stack, self).__init__()
         self._first = None
         self._size = 0
 
@@ -49,14 +48,3 @@ class Stack(object):
 
     def __len__(self) -> int:
         return self._size
-
-    def __iter__(self):
-        self._cur = self._first
-        return self
-
-    def __next__(self) -> T:
-        if self._cur is None:
-            raise StopIteration
-        val = self._cur.value
-        self._cur = self._cur.next
-        return val
